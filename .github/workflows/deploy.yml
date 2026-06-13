@@ -1,0 +1,60 @@
+name: Local Mobile Issue Deployment Pipeline
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  deploy:
+    if: startsWith(github.event.issue.title, '[DEPLOY]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: Parse and Create Files from Issue Body
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          echo "Isolating JSON payload inside markdown code fences..."
+          
+          # Safely extract everything between the triple-backtick json fences
+          CLEANED_JSON=$(echo "$ISSUE_BODY" | sed -n '/^```json/,/^```/p' | sed '1d;$d')
+          
+          if ! echo "$CLEANED_JSON" | jq empty; then
+            echo "CRITICAL ERROR: Extracted text is not valid structured JSON."
+            exit 1
+          fi
+          
+          # Extract the files array and loop through them
+          echo "$CLEANED_JSON" | jq -c '.files[]' | while read -r file; do
+            FILE_PATH=$(echo "$file" | jq -r '.path')
+            FILE_CONTENT=$(echo "$file" | jq -r '.content')
+            
+            mkdir -p "$(dirname "$FILE_PATH")"
+            echo "$FILE_CONTENT" > "$FILE_PATH"
+            echo "Successfully generated: $FILE_PATH"
+          done
+
+      - name: Commit and Push Changes to Main
+        run: |
+          git config --global user.name "GitHub Actions Automation"
+          git config --global user.email "actions@github.com"
+          git add .
+          
+          if git diff-index --quiet HEAD --; then
+            echo "No changes detected. Skipping commit."
+          else
+            git commit -m "docs/feat: automate blog and poc deployment from mobile issue"
+            git push origin HEAD:${{ github.ref }}
+          fi
+
+      - name: Auto-Close Issue on Success
+        run: |
+          gh issue close ${{ github.event.issue.number }} --comment "Deployment successfully processed and committed locally by GitHub Actions."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
