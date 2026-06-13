@@ -20,24 +20,29 @@ jobs:
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
-          echo "Isolating JSON payload inside markdown code fences..."
+          echo "Processing structural configuration stream..."
           
-          # Safely extract everything between the triple-backtick json fences
-          CLEANED_JSON=$(echo "$ISSUE_BODY" | sed -n '/^```json/,/^```/p' | sed '1d;$d')
+          # Check if the content is wrapped in backticks; extract if yes, otherwise take body raw
+          if echo "$ISSUE_BODY" | grep -q '^```json'; then
+            CLEANED_JSON=$(echo "$ISSUE_BODY" | sed -n '/^```json/,/^```/p' | sed '1d;$d')
+          else
+            CLEANED_JSON="$ISSUE_BODY"
+          fi
           
+          # Enforce strict syntax parsing validation
           if ! echo "$CLEANED_JSON" | jq empty; then
-            echo "CRITICAL ERROR: Extracted text is not valid structured JSON."
+            echo "CRITICAL ERROR: Extracted payload text configuration is not a valid JSON structure."
             exit 1
           fi
           
-          # Extract the files array and loop through them
+          # Extract items array dynamically and write targets to disk
           echo "$CLEANED_JSON" | jq -c '.files[]' | while read -r file; do
             FILE_PATH=$(echo "$file" | jq -r '.path')
             FILE_CONTENT=$(echo "$file" | jq -r '.content')
             
             mkdir -p "$(dirname "$FILE_PATH")"
             echo "$FILE_CONTENT" > "$FILE_PATH"
-            echo "Successfully generated: $FILE_PATH"
+            echo "Successfully generated disk asset: $FILE_PATH"
           done
 
       - name: Commit and Push Changes to Main
@@ -47,7 +52,7 @@ jobs:
           git add .
           
           if git diff-index --quiet HEAD --; then
-            echo "No changes detected. Skipping commit."
+            echo "No filesystem discrepancies found. Skipping merge tasks."
           else
             git commit -m "docs/feat: automate blog and poc deployment from mobile issue"
             git push origin HEAD:${{ github.ref }}
