@@ -1,0 +1,26 @@
+---
+// This is your homepage. Later, we can fetch all blog posts here to create a directory.
+---
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* Replaced the dynamic entry variable with a static homepage title */}
+		<title>System Design Blog</title>
+		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+	</head>
+	<body class="bg-slate-50 text-slate-900 antialiased min-h-screen flex items-center justify-center">
+        <main class="text-center">
+		    <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
+                System Design & Architecture
+            </h1>
+            <p class="text-lg text-slate-600 mb-8">
+                Deep technical dives into deterministic AI pipelines.
+            </p>
+            <a href={`${import.meta.env.BASE_URL}blog/building-deterministic-ai-pipelines`} class="text-blue-600 hover:underline">
+                Read the first article →
+            </a>
+        </main>
+	</body>
+</html>

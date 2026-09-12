@@ -1,0 +1,112 @@
+---
+// 1. Import 'render' from astro:content
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    // 2. 'slug' has been renamed to 'id' in the new API
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+// 3. Render is now called as a standalone function
+const { Content } = await render(entry);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{entry.data.title}</title>
+    {/* Dynamically prefixes the favicon with your GitHub Pages base URL */}
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
+    {/* Centered, constrained width for optimal reading comprehension */}
+    <main class="max-w-3xl mx-auto px-6 py-16">
+      
+      {/* Article Header with Metadata */}
+      <header class="mb-12 border-b border-slate-200 pb-8">
+        <div class="flex items-center gap-3 text-sm text-slate-500 font-mono mb-4 mt-8">
+          <time datetime={entry.data.publishDate.toISOString()}>
+            {entry.data.publishDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </time>
+          <span>•</span>
+          {/* Displays the complexity level (e.g., "Advanced") */}
+          <span class="px-2 py-1 bg-slate-200 rounded-md text-slate-800">
+            {entry.data.complexity}
+          </span>
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6 leading-tight">
+          {entry.data.title}
+        </h1>
+        
+        {entry.data.description && (
+          <p class="text-xl text-slate-600 leading-relaxed">
+            {entry.data.description}
+          </p>
+        )}
+      </header>
+
+      {/* Typography-focused Markdown/MDX rendering area */}
+      {/* Typography-focused Markdown/MDX rendering area */}
+      <article class="prose prose-slate prose-lg md:prose-xl max-w-none 
+                      prose-headings:font-semibold prose-headings:tracking-tight 
+                      prose-a:text-blue-600 prose-a:underline-offset-4 hover:prose-a:text-blue-500
+                      prose-code:before:content-none prose-code:after:content-none
+                      prose-pre:border prose-pre:border-slate-700">
+        <Content />
+      </article>
+      
+    </main>
+	{/* Use is:inline so Astro ignores it and lets the browser fetch the CDN directly */}
+    <script type="module" is:inline>
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      
+      mermaid.initialize({ 
+        startOnLoad: false, 
+        theme: "base",
+        themeVariables: {
+          fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+          primaryColor: "#f1f5f9",
+          primaryBorderColor: "#cbd5e1",
+          primaryTextColor: "#0f172a",
+          lineColor: "#475569"
+        }
+      });
+
+      // 1. UPDATED: Target the <pre> tag, which is where Astro places the language attributes
+      const diagrams = document.querySelectorAll('pre[data-language="mermaid"], pre.language-mermaid');
+      
+      diagrams.forEach(async (diagram, index) => {
+        try {
+          // 2. Extract the raw text from inside the <pre> block
+          const content = diagram.textContent || '';
+          const id = `mermaid-svg-${index}`;
+          
+          // 3. Render the SVG
+          const { svg } = await mermaid.render(id, content);
+          
+          // 4. Create the container
+          const container = document.createElement('div');
+          container.innerHTML = svg;
+          container.className = "flex justify-center my-12 w-full overflow-x-auto";
+          
+          // 5. UPDATED: Replace the <pre> tag directly
+          diagram.replaceWith(container);
+        } catch (error) {
+          console.error("Mermaid failed to render diagram:", error);
+        }
+      });
+    </script>
+  </body>
+</html>
