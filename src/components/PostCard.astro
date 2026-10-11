@@ -1,5 +1,5 @@
 ---
-// Post card component for displaying blog posts
+// Post card component for displaying blog posts (styled to match the blog article header)
 interface Props {
   slug: string;
   title: string;
@@ -13,41 +13,52 @@ const {
   slug, 
   title, 
   date = "2026-10-10", 
-  description = "Deep architectural systems analysis with production code snippets and Mermaid diagrams.",
+  description,
   complexity = "Advanced",
   tags = ["Architecture", "Cloud Native"]
 } = Astro.props;
 
 const baseUrl = import.meta.env.BASE_URL;
+const href = `${baseUrl}blog/${slug}/`;
+const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
 ---
 
-<article class="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 transition shadow-xl flex flex-col justify-between group">
-  <div>
-    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-2">
-      <span class="text-cyan-400 font-bold">
-        {complexity}
-      </span>
-      <span>{date}</span>
-    </div>
-    <h2 class="text-xl font-bold text-white group-hover:text-cyan-300 transition mb-2">
-      <a href={`${baseUrl}blog/${slug}/`}>
-        {title}
-      </a>
-    </h2>
-    <p class="text-sm text-slate-400 line-clamp-3 mb-4 leading-relaxed">
+<article class="py-10 border-b border-slate-200 group">
+  <div class="flex items-center gap-3 text-sm text-slate-500 font-mono mb-4">
+    <time datetime={date}>{formattedDate}</time>
+    <span>•</span>
+    <span class="px-2 py-1 bg-slate-200 rounded-md text-slate-800">
+      {complexity}
+    </span>
+  </div>
+
+  <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 leading-tight mb-4">
+    <a href={href} class="group-hover:text-blue-600 transition">
+      {title}
+    </a>
+  </h2>
+
+  {description && (
+    <p class="text-lg text-slate-600 leading-relaxed mb-4">
       {description}
     </p>
-  </div>
-  <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-    <div class="flex flex-wrap gap-1.5">
-      {tags.slice(0, 3).map((tag) => (
-        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">
+  )}
+
+  <div class="flex items-center justify-between gap-4">
+    <div class="flex flex-wrap gap-2">
+      {tags.slice(0, 4).map((tag) => (
+        <span class="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 text-slate-600 border border-slate-200">
           {tag}
         </span>
       ))}
     </div>
-    <a href={`${baseUrl}blog/${slug}/`} class="text-xs font-bold text-cyan-400 group-hover:translate-x-1 transition flex items-center gap-1">
-      Read &rarr;
+    <a href={href} class="shrink-0 text-sm font-semibold text-blue-600 underline-offset-4 hover:underline hover:text-blue-500">
+      Read article &rarr;
     </a>
   </div>
 </article>

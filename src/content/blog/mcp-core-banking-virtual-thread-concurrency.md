@@ -1,6 +1,5 @@
 ---
 title: "Model Context Protocol (MCP) in Enterprise Production: Bridging Core Banking to Autonomous Agents with Virtual Concurrency"
-description: "Autonomous technical intelligence post for model-context-protocol-enterprise-concurrency-d4e2"
 publishDate: 2026-10-05
 complexity: "Advanced"
 author: "Mayur Bakale"
@@ -9,8 +8,6 @@ tags: ["Agentic AI","Model Context Protocol","Virtual Threads","Distributed Syst
 target_audience: "Lead Cloud-Native Architects, Enterprise AI Engineers, and Principal Backend Developers"
 status: "REVISED_READY_FOR_REVIEW"
 ---
-
-# Model Context Protocol (MCP) in Enterprise Production: Bridging Core Banking to Autonomous Agents with Virtual Concurrency
 
 Every enterprise engineering team building LLM integrations eventually runs headfirst into the **"n-by-m connector crisis"**. 
 

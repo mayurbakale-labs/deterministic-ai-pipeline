@@ -5,8 +5,8 @@ import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 
 export default defineConfig({
-  site: 'https://mayurbakale.github.io',
-  base: '/deterministic-ai-pipeline', 
+  site: 'https://mayurbakale-labs.github.io',
+  base: '/',
   
   // 2. Add react() to the integrations array
   integrations: [mdx(), tailwind(), react()],

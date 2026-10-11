@@ -1,6 +1,5 @@
 ---
 title: "Model Context Protocol (MCP) in Enterprise Production: Bridging Core Banking to Autonomous Agents with Java 21 and Spring AI"
-description: "Autonomous technical intelligence post for mcp-spring-java21-2026"
 publishDate: 2026-10-05
 complexity: "Advanced"
 author: "Mayur Bakale"
@@ -9,8 +8,6 @@ tags: ["Agentic AI","Model Context Protocol","Java 21","Spring AI","Virtual Thre
 target_audience: "Lead Cloud-Native Architects, Enterprise AI Engineers, and Principal Backend Developers"
 status: "REVISED_READY_FOR_REVIEW"
 ---
-
-# Model Context Protocol (MCP) in Enterprise Production: Bridging Core Banking to Autonomous Agents with Java 21 and Spring AI
 
 Every enterprise engineering team building LLM integrations eventually runs headfirst into the **"n-by-m connector crisis"**. 
 
