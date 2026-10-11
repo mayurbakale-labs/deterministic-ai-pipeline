@@ -6,6 +6,7 @@ import react from '@astrojs/react';
 
 export default defineConfig({
   site: 'https://mayurbakale-labs.github.io',
+  // Served from the root because the repo is named `mayurbakale-labs.github.io` (GitHub Pages org site).
   base: '/',
   
   // 2. Add react() to the integrations array
