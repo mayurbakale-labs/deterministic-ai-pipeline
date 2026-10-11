@@ -1,0 +1,18 @@
+---
+// Footer component
+interface Props {
+  year?: number;
+  author?: string;
+  siteName?: string;
+}
+
+const { 
+  year = new Date().getFullYear(), 
+  author = "Mayur Bakale",
+  siteName = "Deterministic AI Pipeline"
+} = Astro.props;
+---
+
+<footer class="border-t border-slate-900 py-8 text-center text-xs font-mono text-slate-500 mt-auto">
+  <p>&copy; {year} {author} &bull; {siteName} &bull; Cloud-Native Architecture</p>
+</footer>
