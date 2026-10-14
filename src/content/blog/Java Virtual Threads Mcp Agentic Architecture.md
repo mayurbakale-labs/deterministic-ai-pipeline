@@ -1,8 +1,9 @@
 ---
 title: Architecting High-Throughput Agentic AI Gateways with Java 21+ Virtual Threads, Spring AI, and MCP
 description: An architectural deep-dive into building scalable, fault-tolerant agentic AI gateways using Java 21 Virtual Threads (JEP 444), Structured Concurrency (JEP 453), Spring AI, Model Context Protocol (MCP), and Resilience4j.
-pubDate: 2026-10-14
+publishDate: 2026-10-14
 author: Mayur Bakale
+complexity: Advanced
 category: AI Engineering & Java System Design
 tags:
   - Microservices
